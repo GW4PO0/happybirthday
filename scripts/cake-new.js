@@ -10,52 +10,89 @@ const yesBtn = document.querySelector('.yes');
 const noBtn = document.querySelector('.no');
 const proceedToGift = document.querySelector('.proceed-to-gift');
 let isShow = true;
-let touchStartX = 0;
-let touchStartY = 0;
 let isDragging = false;
+let offsetX = 0;
+let offsetY = 0;
+let startX = 0;
+let startY = 0;
 
 // Touch event handlers for candle dragging
 candle.addEventListener('touchstart', function(e) {
     if (candle.parentElement === candleStage) {
-        e.preventDefault();
-        return false;
+        return;
     }
     
     const touch = e.touches[0];
-    touchStartX = touch.clientX;
-    touchStartY = touch.clientY;
+    const rect = candle.getBoundingClientRect();
+    
+    // Calculate offset from touch point to candle's top-left corner
+    offsetX = touch.clientX - rect.left;
+    offsetY = touch.clientY - rect.top;
+    
+    startX = rect.left;
+    startY = rect.top;
+    
     isDragging = true;
+    candle.style.position = 'fixed';
+    candle.style.zIndex = '1000';
     candle.style.opacity = '0.8';
-}, { passive: true });
+    candle.style.pointerEvents = 'none';
+    
+    // Store original position for fallback
+    candle.dataset.originalLeft = rect.left;
+    candle.dataset.originalTop = rect.top;
+    
+    e.preventDefault();
+}, { passive: false });
 
 candle.addEventListener('touchmove', function(e) {
     if (!isDragging) return;
     e.preventDefault();
     
     const touch = e.touches[0];
-    const rect = candleStage.getBoundingClientRect();
     
-    // Check if touch is over the candleStage
-    if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
-        touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
-        candle.style.border = '2px solid green';
+    // Move candle with finger
+    candle.style.left = (touch.clientX - offsetX) + 'px';
+    candle.style.top = (touch.clientY - offsetY) + 'px';
+    
+    // Check if over candleStage
+    const stageRect = candleStage.getBoundingClientRect();
+    const candleRect = candle.getBoundingClientRect();
+    const candleCenterX = candleRect.left + candleRect.width / 2;
+    const candleCenterY = candleRect.top + candleRect.height / 2;
+    
+    if (candleCenterX >= stageRect.left && candleCenterX <= stageRect.right &&
+        candleCenterY >= stageRect.top && candleCenterY <= stageRect.bottom) {
+        candleStage.style.border = '3px solid green';
+        candleStage.style.backgroundColor = 'rgba(0, 255, 0, 0.1)';
     } else {
-        candle.style.border = 'none';
+        candleStage.style.border = '2px solid #ccc';
+        candleStage.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
     }
 }, { passive: false });
 
 candle.addEventListener('touchend', function(e) {
     if (!isDragging) return;
     isDragging = false;
+    
     candle.style.opacity = '1';
-    candle.style.border = 'none';
+    candle.style.pointerEvents = 'auto';
+    candle.style.position = '';
+    candle.style.zIndex = '';
+    candle.style.left = '';
+    candle.style.top = '';
     
-    // Check if the touch ended over the candleStage
+    // Reset stage styles
+    candleStage.style.border = '2px solid #ccc';
+    candleStage.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+    
+    // Check if dropped on candleStage
     const touch = e.changedTouches[0];
-    const rect = candleStage.getBoundingClientRect();
+    const stageRect = candleStage.getBoundingClientRect();
     
-    if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
-        touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+    // Check if touch point is within candleStage
+    if (touch.clientX >= stageRect.left && touch.clientX <= stageRect.right &&
+        touch.clientY >= stageRect.top && touch.clientY <= stageRect.bottom) {
         
         // Drop the candle into candleStage
         if (candle.parentElement === candleHolder) {
@@ -64,6 +101,8 @@ candle.addEventListener('touchend', function(e) {
             candle.style.position = 'relative';
             candle.style.left = '0';
             candle.style.top = '0';
+            candle.style.width = '';
+            candle.style.height = '';
             
             happyBirthday.textContent = 'Happy Birthday To You';
             fire.style.display = 'block';
@@ -84,7 +123,7 @@ candle.addEventListener('touchend', function(e) {
     }
 }, { passive: true });
 
-// Drag events (keep original)
+// Drag events (keep original for desktop)
 candle.addEventListener('dragstart', function(e) {
     if (candle.parentElement === candleStage) {
         e.preventDefault();
@@ -132,14 +171,12 @@ blowBtn.addEventListener('touchstart', function(e) {
 // Touch events for invitation buttons
 yesBtn.addEventListener('touchstart', function(e) {
     e.preventDefault();
-    // Handle yes button click
     proceedToGift.href = 'photos.html';
     giftInvitation.style.display = 'none';
 }, { passive: false });
 
 noBtn.addEventListener('touchstart', function(e) {
     e.preventDefault();
-    // Handle no button click
     giftInvitation.style.display = 'none';
     cake.style.display = 'block';
     candle.style.display = 'block';
@@ -166,9 +203,11 @@ function showInvitation() {
     proceedToGift.style.color = 'inherit';
 }
 
-// Prevent scrolling when interacting with the candle
-document.querySelector('.candle-container')?.addEventListener('touchmove', function(e) {
-    e.preventDefault();
+// Prevent scrolling when dragging the candle
+document.addEventListener('touchmove', function(e) {
+    if (isDragging) {
+        e.preventDefault();
+    }
 }, { passive: false });
 
 // Click events for buttons (keep for desktop)
