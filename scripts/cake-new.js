@@ -13,8 +13,6 @@ let isShow = true;
 let isDragging = false;
 let offsetX = 0;
 let offsetY = 0;
-let startX = 0;
-let startY = 0;
 
 // Touch event handlers for candle dragging
 candle.addEventListener('touchstart', function(e) {
@@ -29,25 +27,26 @@ candle.addEventListener('touchstart', function(e) {
     offsetX = touch.clientX - rect.left;
     offsetY = touch.clientY - rect.top;
     
-    startX = rect.left;
-    startY = rect.top;
-    
     isDragging = true;
     candle.style.position = 'fixed';
     candle.style.zIndex = '1000';
     candle.style.opacity = '0.8';
     candle.style.pointerEvents = 'none';
+    candle.style.width = rect.width + 'px';
+    candle.style.height = rect.height + 'px';
     
-    // Store original position for fallback
-    candle.dataset.originalLeft = rect.left;
-    candle.dataset.originalTop = rect.top;
+    // Prevent page scroll
+    document.body.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none';
     
     e.preventDefault();
+    e.stopPropagation();
 }, { passive: false });
 
 candle.addEventListener('touchmove', function(e) {
     if (!isDragging) return;
     e.preventDefault();
+    e.stopPropagation();
     
     const touch = e.touches[0];
     
@@ -64,7 +63,8 @@ candle.addEventListener('touchmove', function(e) {
     if (candleCenterX >= stageRect.left && candleCenterX <= stageRect.right &&
         candleCenterY >= stageRect.top && candleCenterY <= stageRect.bottom) {
         candleStage.style.border = '3px solid green';
-        candleStage.style.backgroundColor = 'rgba(0, 255, 0, 0.1)';
+        candleStage.style.backgroundColor = 'rgba(0, 255, 0, 0.2)';
+        candleStage.style.transition = 'all 0.2s';
     } else {
         candleStage.style.border = '2px solid #ccc';
         candleStage.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
@@ -72,7 +72,10 @@ candle.addEventListener('touchmove', function(e) {
 }, { passive: false });
 
 candle.addEventListener('touchend', function(e) {
-    if (!isDragging) return;
+    if (!isDragging) {
+        // If not dragging, check if it's a tap on the candle (optional)
+        return;
+    }
     isDragging = false;
     
     candle.style.opacity = '1';
@@ -81,10 +84,16 @@ candle.addEventListener('touchend', function(e) {
     candle.style.zIndex = '';
     candle.style.left = '';
     candle.style.top = '';
+    candle.style.width = '';
+    candle.style.height = '';
     
     // Reset stage styles
     candleStage.style.border = '2px solid #ccc';
     candleStage.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+    
+    // Reset body scroll
+    document.body.style.overflow = '';
+    document.body.style.touchAction = '';
     
     // Check if dropped on candleStage
     const touch = e.changedTouches[0];
@@ -121,7 +130,26 @@ candle.addEventListener('touchend', function(e) {
             music.play();
         }
     }
-}, { passive: true });
+    
+    e.preventDefault();
+}, { passive: false });
+
+// Prevent default touch behavior on the candle container
+const candleContainer = document.querySelector('.candle-container');
+if (candleContainer) {
+    candleContainer.addEventListener('touchmove', function(e) {
+        if (isDragging) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+}
+
+// Global touchmove prevention for the entire page when dragging
+document.addEventListener('touchmove', function(e) {
+    if (isDragging) {
+        e.preventDefault();
+    }
+}, { passive: false });
 
 // Drag events (keep original for desktop)
 candle.addEventListener('dragstart', function(e) {
@@ -202,13 +230,6 @@ function showInvitation() {
     proceedToGift.style.textDecoration = 'none';
     proceedToGift.style.color = 'inherit';
 }
-
-// Prevent scrolling when dragging the candle
-document.addEventListener('touchmove', function(e) {
-    if (isDragging) {
-        e.preventDefault();
-    }
-}, { passive: false });
 
 // Click events for buttons (keep for desktop)
 blowBtn.addEventListener('click', blowCandle);
