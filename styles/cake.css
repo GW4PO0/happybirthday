@@ -1,0 +1,408 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Add container query for browser resize limits */
+:root {
+  --min-screen-width: 320px;
+  --max-screen-width: 1200px;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+/* Set minimum and maximum width for the entire page */
+html, body {
+  background-color: lightgray;
+  height: 100%;
+  margin: 0;
+  min-width: var(--min-screen-width);
+  max-width: var(--max-screen-width);
+  margin: 0 auto; /* Center the content when max-width is reached */
+}
+
+body {
+  border-color: 10px;
+  min-width: 300px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding-top: 10%;
+  z-index: 100;
+  position: relative;
+  min-width: 280px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* New cake-container styles */
+.cake-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  min-width: 250px;
+  max-width: 400px;
+}
+
+.candle-container-top {
+  display: flex;
+  justify-content: center;
+  width: clamp(120px, 25vw, 280px);
+  aspect-ratio: 2.8;
+  min-width: 100px;
+  max-width: 280px;
+}
+
+.candle-container-bottom {
+  display: flex;
+  justify-content: center;
+  width: clamp(120px, 25vw, 280px);
+  aspect-ratio: 2.8;
+  margin-bottom: clamp(30px, 5vw, 60px);
+  min-width: 100px;
+  max-width: 280px;
+}
+
+.cake {
+  background-color: lightcoral;
+  width: clamp(120px, 25vw, 280px);
+  aspect-ratio: 4/3;
+  min-width: 100px;
+  max-width: 280px;
+}
+
+.candle {
+  background-color: black;
+  width: 15%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+  transition: all 0.2s ease;
+  min-width: 15px;
+  max-width: 42px;
+}
+
+.candle:active {
+  cursor: grabbing;
+}
+
+/* Update your existing .popup-button styles */
+.popup-button {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: clamp(8px, 2vw, 12px) clamp(16px, 4vw, 24px);
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  z-index: 1000;
+  display: none;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  bottom: clamp(50px, 15vh, 150px);
+  min-width: 120px;
+  max-width: 250px;
+}
+
+.popup-button:hover {
+  transform: translateX(-50%) scale(1.05);
+  background-color: #ff5252;
+}
+
+@media (max-width: 768px) {
+  .popup-button {
+    bottom: 30%;
+    font-size: 1.2rem;
+    top: auto;
+    min-width: 100px;
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .popup-button {
+    bottom: 30%;
+    font-size: 1.2rem;
+    top: auto;
+    min-width: 90px;
+    max-width: 180px;
+  }
+}
+
+/* Animation when button appears */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.popup-button.show {
+  display: block;
+  animation: slideUp 0.4s ease forwards;
+}
+
+.happy-birthday {
+  display: none;
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: bold;
+  color: #ff6b6b;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  font-family: 'Segoe UI', 'Poppins', cursive;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+  min-width: 200px;
+  max-width: 500px;
+}
+
+/* Fallback color for browsers that don't support background-clip */
+@supports not (background-clip: text) {
+  .happy-birthday {
+    color: #ff6b6b;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  }
+}
+
+/* Animation for happy birthday text */
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.05);
+  }
+  70% {
+    transform: translateX(-50%) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .happy-birthday {
+    font-size: clamp(1.6rem, 5vw, 2.8rem);
+    white-space: nowrap;
+    top: 10%;
+    min-width: 160px;
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .happy-birthday {
+    font-size: clamp(1.2rem, 4vw, 2rem);
+    white-space: nowrap;
+    top: 16%;
+    min-width: 140px;
+    max-width: 300px;
+  }
+}
+
+/* LANDSCAPE MODE ADJUSTMENTS */
+@media (orientation: landscape) and (max-height: 768px) {
+  /* Make cake and containers smaller in landscape */
+  .cake {
+    width: clamp(100px, 18vw, 160px);
+    min-width: 80px;
+    max-width: 180px;
+  }
+  
+  .candle-container-top,
+  .candle-container-bottom {
+    width: clamp(100px, 18vw, 160px);
+    min-width: 80px;
+    max-width: 180px;
+  }
+  
+  .candle {
+    width: 15%;
+    height: 100%;
+    min-width: 12px;
+    max-width: 27px;
+  }
+  
+  /* Adjust text sizes in landscape */
+  .happy-birthday {
+    font-size: clamp(1rem, 3.5vh, 1.8rem);
+    top: 5%;
+    white-space: nowrap;
+    min-width: 140px;
+    max-width: 350px;
+  }
+  
+  .popup-button {
+    font-size: clamp(0.9rem, 2.5vh, 1.3rem);
+    padding: clamp(4px, 1vh, 8px) clamp(10px, 3vw, 16px);
+    bottom: clamp(10px, 10vh, 30px);
+    min-width: 100px;
+    max-width: 200px;
+  }
+  
+  .main-container {
+    padding-top: 5%;
+    min-width: 280px;
+    max-width: 1000px;
+  }
+  
+  /* Add top margin to cake-container in landscape to maintain center position */
+  .cake-container {
+    margin-top: clamp(20px, 8vh, 60px);
+    min-width: 250px;
+    max-width: 350px;
+  }
+}
+
+/* For very small landscape phones */
+@media (orientation: landscape) and (max-height: 600px) {
+  .cake {
+    width: clamp(70px, 15vw, 120px);
+    min-width: 60px;
+    max-width: 140px;
+  }
+  
+  .candle-container-top,
+  .candle-container-bottom {
+    width: clamp(70px, 15vw, 120px);
+    min-width: 60px;
+    max-width: 140px;
+  }
+  
+  .happy-birthday {
+    font-size: clamp(0.8rem, 2.5vh, 1.3rem);
+    top: 2%;
+    min-width: 120px;
+    max-width: 280px;
+  }
+  
+  .main-container {
+    padding-top: 2%;
+  }
+  
+  .popup-button {
+    font-size: clamp(0.8rem, 2vh, 1rem);
+    padding: clamp(3px, 0.8vh, 6px) clamp(8px, 2vw, 12px);
+    min-width: 80px;
+    max-width: 160px;
+  }
+  
+  /* Smaller top margin for very small landscape phones */
+  .cake-container {
+    margin-top: clamp(10px, 4vh, 30px);
+  }
+}
+
+/* For tablets in landscape */
+@media (orientation: landscape) and (min-width: 769px) and (max-height: 1024px) {
+  .cake {
+    width: clamp(120px, 20vw, 200px);
+    min-width: 100px;
+    max-width: 220px;
+  }
+  
+  .candle-container-top,
+  .candle-container-bottom {
+    width: clamp(120px, 20vw, 200px);
+    min-width: 100px;
+    max-width: 220px;
+  }
+  
+  .happy-birthday {
+    font-size: clamp(1.4rem, 4.5vh, 2.5rem);
+    top: 8%;
+    min-width: 180px;
+    max-width: 450px;
+  }
+  
+  /* Larger top margin for tablets in landscape */
+  .cake-container {
+    margin-top: clamp(30px, 10vh, 80px);
+  }
+}
+
+/* Add boundary for extremely large screens */
+@media (min-width: 1201px) {
+  .main-container {
+    transform: scale(0.95);
+    transform-origin: center;
+  }
+  
+  .cake {
+    width: 280px;
+  }
+  
+  .candle-container-top,
+  .candle-container-bottom {
+    width: 280px;
+  }
+  
+  .happy-birthday {
+    font-size: 4rem;
+  }
+}
+
+/* Add boundary for extremely small screens */
+@media (max-width: 319px) {
+  .main-container {
+    transform: scale(0.9);
+    transform-origin: center;
+  }
+  
+  .cake {
+    width: 100px;
+  }
+  
+  .candle-container-top,
+  .candle-container-bottom {
+    width: 100px;
+  }
+  
+  .happy-birthday {
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+  
+  .popup-button {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    min-width: 70px;
+  }
+}

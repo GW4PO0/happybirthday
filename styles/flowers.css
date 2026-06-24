@@ -1,0 +1,45 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html, body {
+  background-color: lightgray;
+  height: 100%;
+  margin: 0;
+  min-width: var(--min-screen-width);
+  max-width: var(--max-screen-width);
+  margin: 0 auto; /* Center the content when max-width is reached */
+  font-size: 1.2rem;
+}
+.main-container{
+    border-style: solid;
+    border-width: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    z-index: 100;
+    
+
+}
+
+.back-btn a{
+    text-decoration: none;
+    color: inherit;
+}
+.back-btn{
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    position: absolute;
+    top: 5%;
+    left: 5%;
+}
+
+.flower{
+
+    width: 50rem;
+    height:38rem;
+    background-color: lightseagreen;
+}
