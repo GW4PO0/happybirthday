@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Magical Birthday Cake - Drag the Candle</title>
+    <style>
+        * {
+            user-select: none; /* Prevents text selection while dragging */
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a3f5c 0%, #0e2a3b 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Poppins', 'Segoe UI', 'Quicksand', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Main container */
+        .game-container {
+            background: rgba(255, 248, 225, 0.2);
+            backdrop-filter: blur(4px);
+            border-radius: 70px;
+            padding: 30px 40px 40px 40px;
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255,255,255,0.3);
+        }
+
+        /* canvas area for cake + candle area (relative positioning) */
+        .cake-stage {
+            position: relative;
+            background: #fef3e2;
+            border-radius: 60px;
+            padding: 35px 35px 30px 35px;
+            box-shadow: inset 0 0 0 3px #fff9ef, 0 20px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 40px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+            cursor: grab;
+            background: #fff7ed;
+        }
+
+        canvas:active {
+            cursor: grabbing;
+        }
+
+        /* Right-side candle dock */
+        .candle-dock {
+            position: absolute;
+            right: -70px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ffedd5;
+            width: 95px;
+            height: 130px;
+            border-radius: 50px 20px 20px 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: -5px 8px 18px rgba(0,0,0,0.3), inset 0 1px 3px rgba(255,255,200,0.8);
+            border: 2px solid #ffcd94;
+            backdrop-filter: blur(2px);
+            transition: all 0.2s ease;
+        }
+
+        .candle-dock p {
+            margin: 0;
+            font-size: 14px;
+            font-weight: bold;
+            color: #b45116;
+            background: #fff0cf;
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-family: inherit;
+        }
+
+        /* draggable candle element */
+        .drag-candle {
+            width: 48px;
+            height: 70px;
+            background: linear-gradient(145deg, #ff6b6b, #e63946);
+            border-radius: 24px 24px 12px 12px;
+            cursor: grab;
+            position: relative;
+            transition: transform 0.05s linear;
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255,255,200,0.8);
+            touch-action: none;
+        }
+
+        .drag-candle:active {
+            cursor: grabbing;
+        }
+
+        /* flame inside draggable candle */
+        .drag-candle::before {
+            content: "🔥";
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 32px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            pointer-events: none;
+            text-shadow: 0 0 6px orange;
+        }
+
+        /* wick detail */
+        .drag-candle::after {
+            content: "";
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            width: 4px;
+            height: 12px;
+            background: #3e2a1f;
+            transform: translateX(-50%);
+            border-radius: 2px;
+            pointer-events: none;
+        }
+
+        /* happy birthday text area */
+        .message-area {
+            text-align: center;
+            margin-top: 28px;
+            font-size: 2.4rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 4px 4px 0 #ffb347;
+            color: #fff2d7;
+            background: #ff9f4a80;
+            backdrop-filter: blur(8px);
+            padding: 12px 20px;
+            border-radius: 60px;
+            display: inline-block;
+            width: auto;
+            min-width: 280px;
+            transition: all 0.3s ease;
+        }
+
+        .button-area {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .blow-btn {
+            background: radial-gradient(circle at 30% 10%, #ffd966, #ffb347);
+            border: none;
+            font-size: 1.8rem;
+            font-weight: bold;
+            font-family: inherit;
+            padding: 12px 32px;
+            border-radius: 60px;
+            cursor: pointer;
+            box-shadow: 0 10px 0 #b4621a;
+            transition: 0.07s linear;
+            color: #3d2a1a;
+            letter-spacing: 2px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .blow-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 5px 0 #b4621a;
+        }
+
+        .footer-note {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #fdebb3;
+            font-weight: 500;
+        }
+
+        @media (max-width: 750px) {
+            .game-container {
+                padding: 20px 25px 30px 25px;
+            }
+            .candle-dock {
+                right: -45px;
+                width: 75px;
+                height: 110px;
+            }
+            .drag-candle {
+                width: 38px;
+                height: 58px;
+            }
+            .drag-candle::before {
+                font-size: 26px;
+                top: -16px;
+            }
+            .message-area {
+                font-size: 1.5rem;
+            }
+            .blow-btn {
+                font-size: 1.3rem;
+                padding: 8px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div class="game-container">
+        <div class="cake-stage">
+            <canvas id="cakeCanvas" width="500" height="400" style="width:100%; height:auto; max-width:500px; aspect-ratio:500/400"></canvas>
+            <!-- right side draggable candle container -->
+            <div id="candleDock" class="candle-dock">
+                <p>🎂 Drag me 🕯️</p>
+                <div id="draggableCandle" class="drag-candle" draggable="true"></div>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: center; flex-direction: column; align-items: center;">
+            <div id="birthdayText" class="message-area">✨ Drag Candle ✨</div>
+            <div class="button-area">
+                <button id="blowButton" class="blow-btn">💨 BLOW THE CANDLE 🕯️</button>
+            </div>
+        </div>
+        <div class="footer-note">
+            🕯️ Grab the candle from the right side → Drop onto the cake top! 🎶
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ------------------- SETUP -------------------
+        const canvas = document.getElementById('cakeCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // DOM elements
+        const draggableCandle = document.getElementById('draggableCandle');
+        const birthdayTextDiv = document.getElementById('birthdayText');
+        const blowButton = document.getElementById('blowButton');
+        const candleDock = document.getElementById('candleDock');
+
+        // Audio setup: create an audio element for "happybirthday song mp3"
+        // We'll use a Web Audio-friendly approach: play an embedded base64 or simple generated?
+        // Since requirement is an mp3 happy birthday song, we embed a sample happy birthday melody 
+        // using Web Audio API with a classic tune? But requirement says "play a happybirthday song mp3"
+        // To make fully functional and independent, we create an audio element that plays a standard happy birthday tune using an external resource? 
+        // To ensure instant working offline, we can generate a synthetic happy birthday melody using Web Audio (Oscillators) but that might be too synthetic.
+        // Better: Use a tiny in-memory MP3? We don't have file, but we can embed a short 'data uri'? Not easy.
+        // Given flexibility, we'll use the Web Audio API to generate a cheerful melody that sounds like Happy Birthday, but because they asked "mp3" effect,
+        // but more importantly it's a happy birthday song. To be robust, we will use an AudioContext + pre-built melody (notes) to play "Happy Birthday to You".
+        // This satisfies playing a recognizable happy birthday song without needing external files.
+        // Additionally, we manage music state to ensure after music ends -> change text + show blow button.
+        
+        let audioContext = null;
+        let isPlaying = false;
+        let musicEnded = false;      // music finished?
+        let candlePlaced = false;     // has candle been dragged onto cake?
+        
+        // Store note timing & frequencies (Happy Birthday melody in C major)
+        // Melody: Happy Birthday to You (standard)
+        // Notes: G G A G C B   (first phrase)  G G A G D C   (second)  G G G E C B A   (third)  F F E C D C   (last)
+        // Frequencies in Hz (C4=261.63, D4=293.66, E4=329.63, F4=349.23, G4=392.00, A4=440.00, B4=493.88, C5=523.25)
+        const notesMap = {
+            'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23,
+            'G4': 392.00, 'A4': 440.00, 'B4': 493.88, 'C5': 523.25,
+            'G3': 196.00, 'rest': 0
+        };
+        
+        // Happy Birthday melody (duration in seconds, each note)
+        const melody = [
+            { note: 'G4', duration: 0.4 }, { note: 'G4', duration: 0.4 }, { note: 'A4', duration: 0.8 }, { note: 'G4', duration: 0.8 }, { note: 'C5', duration: 0.8 }, { note: 'B4', duration: 1.2 },
+            { note: 'G4', duration: 0.4 }, { note: 'G4', duration: 0.4 }, { note: 'A4', duration: 0.8 }, { note: 'G4', duration: 0.8 }, { note: 'D4', duration: 0.8 }, { note: 'C4', duration: 1.2 },
+            { note: 'G4', duration: 0.4 }, { note: 'G4', duration: 0.4 }, { note: 'G4', duration: 0.8 }, { note: 'E4', duration: 0.8 }, { note: 'C5', duration: 0.8 }, { note: 'B4', duration: 0.8 }, { note: 'A4', duration: 1.2 },
+            { note: 'F4', duration: 0.4 }, { note: 'F4', duration: 0.4 }, { note: 'E4', duration: 0.8 }, { note: 'C4', duration: 0.8 }, { note: 'D4', duration: 0.8 }, { note: 'C4', duration: 1.6 }
+        ];
+        
+        function playHappyBirthdaySong() {
+            if (isPlaying) return;
+            if (audioContext === null) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            // Resume if suspended (browser policy)
+            if (audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    startMelody();
+                }).catch(e => console.warn);
+            } else {
+                startMelody();
+            }
+        }
+        
+        let scheduledTimeouts = [];
+        function startMelody() {
+            if (isPlaying) return;
+            // stop any previous scheduled notes
+            scheduledTimeouts.forEach(clearTimeout);
+            scheduledTimeouts = [];
+            isPlaying = true;
+            musicEnded = false;
+            let currentTime = audioContext.currentTime;
+            let startTime = currentTime + 0.05;
+            let accumTime = startTime;
+            
+            for (let i = 0; i < melody.length; i++) {
+                const seg = melody[i];
+                const freq = notesMap[seg.note];
+                const dur = seg.duration;
+                if (freq && freq > 0) {
+                    const noteStart = accumTime;
+                    const noteEnd = noteStart + dur;
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.2, noteStart);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, noteEnd);
+                    osc.start(noteStart);
+                    osc.stop(noteEnd);
+                    // schedule cleanup
+                    const timeoutId = setTimeout(() => {}, dur * 1000);
+                    scheduledTimeouts.push(timeoutId);
+                }
+                accumTime += dur;
+            }
+            // after melody ends, schedule callback (slightly after last note)
+            const totalDuration = (accumTime - startTime) + 0.2;
+            const finishTimeout = setTimeout(() => {
+                if (isPlaying) {
+                    isPlaying = false;
+                    musicEnded = true;
+                    // update UI: change text to "Make a wish" and show Blow button
+                    if (candlePlaced) {
+                        birthdayTextDiv.innerText = "🎂 Make a Wish! 🎂";
+                        blowButton.style.display = "flex";
+                    } else {
+                        // fallback but shouldn't happen
+                        if (candlePlaced) birthdayTextDiv.innerText = "🎂 Make a Wish! 🎂";
+                    }
+                }
+            }, totalDuration * 1000);
+            scheduledTimeouts.push(finishTimeout);
+        }
+        
+        // stop and reset music state if needed (if candle removed weirdly)
+        function resetMusicAndUI() {
+            if (isPlaying) {
+                // abort playing? optional but cancel scheduled
+                scheduledTimeouts.forEach(clearTimeout);
+                scheduledTimeouts = [];
+                isPlaying = false;
+            }
+            musicEnded = false;
+            // if the candle placed variable is false, we keep default text
+            if (!candlePlaced) {
+                birthdayTextDiv.innerText = "✨ Drag Candle ✨";
+                blowButton.style.display = "none";
+            } else {
+                // if candle placed but music ended already? but reset logic rarely
+            }
+        }
+        
+        // ---------- CANDLE DRAG & DROP LOGIC ----------
+        // make draggable candle truly draggable using native HTML5 Drag & Drop plus JavaScript positioning,
+        // but since canvas drop detection needed, we'll implement manual drag using mouse/touch events for reliability.
+        // Simpler: implement custom drag using mousedown/mousemove/mouseup on the draggableCandle element.
+        // But also we need to detect drop onto cake canvas region (top of cake). We'll implement manual "drag clone" like effect.
+        let isDragging = false;
+        let dragStartX = 0, dragStartY = 0;
+        let cloneElement = null;
+        
+        function onDragStart(e) {
+            if (candlePlaced) return; // candle already placed on cake can't be dragged again?
+            // prevent default to handle manual
+            e.preventDefault();
+            const candleRect = draggableCandle.getBoundingClientRect();
+            let clientX, clientY;
+            if (e.type === 'mousedown') {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            } else if (e.type === 'touchstart') {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+                e.preventDefault();
+            } else {
+                return;
+            }
+            dragStartX = clientX - candleRect.left;
+            dragStartY = clientY - candleRect.top;
+            // create clone for visual feedback
+            cloneElement = draggableCandle.cloneNode(true);
+            cloneElement.style.position = 'fixed';
+            cloneElement.style.left = `${candleRect.left}px`;
+            cloneElement.style.top = `${candleRect.top}px`;
+            cloneElement.style.width = `${draggableCandle.offsetWidth}px`;
+            cloneElement.style.height = `${draggableCandle.offsetHeight}px`;
+            cloneElement.style.margin = '0';
+            cloneElement.style.opacity = '0.8';
+            cloneElement.style.zIndex = '9999';
+            cloneElement.style.pointerEvents = 'none';
+            document.body.appendChild(cloneElement);
+            draggableCandle.style.opacity = '0.4';
+            isDragging = true;
+        }
+        
+        function onDragMove(e) {
+            if (!isDragging || !cloneElement) return;
+            e.preventDefault();
+            let clientX, clientY;
+            if (e.type === 'mousemove') {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            } else if (e.type === 'touchmove') {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+                e.preventDefault();
+            } else return;
+            let left = clientX - dragStartX;
+            let top = clientY - dragStartY;
+            cloneElement.style.left = `${left}px`;
+            cloneElement.style.top = `${top}px`;
+        }
+        
+        function onDragEnd(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            // determine drop target: is it over the cake canvas?
+            const canvasRect = canvas.getBoundingClientRect();
+            let finalX, finalY;
+            if (e.type === 'mouseup') {
+                finalX = e.clientX;
+                finalY = e.clientY;
+            } else if (e.type === 'touchend') {
+                const changed = e.changedTouches[0];
+                finalX = changed.clientX;
+                finalY = changed.clientY;
+            } else {
+                cleanupDrag();
+                return;
+            }
+            
+            let droppedOnCake = (finalX >= canvasRect.left && finalX <= canvasRect.right &&
+                                 finalY >= canvasRect.top && finalY <= canvasRect.bottom);
+            
+            // Additional: check if within cake top area (y coordinate roughly cake top? but any area on canvas is okay, but we need "on top of the cake")
+            // For extra magic, we define top half of canvas (y < 200ish) as top of cake.
+            let canvasRelativeY = finalY - canvasRect.top;
+            let isTopOfCake = droppedOnCake && (canvasRelativeY < 210); // the cake frosting area from drawing
+            if (droppedOnCake && isTopOfCake && !candlePlaced) {
+                // Place candle on cake, trigger song and text
+                placeCandleOnCake();
+            } else {
+                // not valid drop, reset
+                if (!candlePlaced) {
+                    // revert visibility
+                }
+            }
+            cleanupDrag();
+        }
+        
+        function cleanupDrag() {
+            if (cloneElement) {
+                cloneElement.remove();
+                cloneElement = null;
+            }
+            draggableCandle.style.opacity = '1';
+            isDragging = false;
+        }
+        
+        function placeCandleOnCake() {
+            if (candlePlaced) return;
+            candlePlaced = true;
+            // hide original draggable candle from dock (visual removal)
+            draggableCandle.style.display = 'none';
+            // optionally hide dock text
+            const dockPara = candleDock.querySelector('p');
+            if (dockPara) dockPara.innerText = "✨ Placed! ✨";
+            // Mark on canvas drawing that candle is now on cake.
+            // We'll also store candleOnCake = true and draw a candle on cake top.
+            drawCanvasWithCandle(true);
+            // Show Happy Birthday text immediately
+            birthdayTextDiv.innerText = "🎉 Happy Birthday! 🎉";
+            // play the happy birthday song mp3 equivalent
+            playHappyBirthdaySong();
+            // after music ends, we already have listener in finishTimeout (musicEnded flag & text change + blow button)
+            // But also we need to ensure when music finishes, we change text to "Make a wish" and show blow button,
+            // and if musicEnded is set from previous finish callback do it.
+            // However check if music already ended before we set? no, we just started playing. The finish callback will
+            // check candlePlaced (true) and then change text and show button.
+            // To avoid double calling, set an interval? but it's fine
+            // Edge: if play fails or song ends early we handle via callback.
+            // Additionally, if callback already runs, we force re-check when music ends.
+            function checkAfterMusic() {
+                if (musicEnded && candlePlaced && birthdayTextDiv.innerText !== "🎂 Make a Wish! 🎂") {
+                    birthdayTextDiv.innerText = "🎂 Make a Wish! 🎂";
+                    blowButton.style.display = "flex";
+                }
+            }
+            // poll for 10 seconds? but we rely on the finish timeout in startMelody which already sets musicEnded.
+            // Just in case we set an interval fallback? but it's robust.
+            const interval = setInterval(() => {
+                if (musicEnded && candlePlaced) {
+                    if (birthdayTextDiv.innerText !== "🎂 Make a Wish! 🎂") {
+                        birthdayTextDiv.innerText = "🎂 Make a Wish! 🎂";
+                        blowButton.style.display = "flex";
+                    }
+                    clearInterval(interval);
+                } else if (!candlePlaced) clearInterval(interval);
+            }, 200);
+            setTimeout(() => clearInterval(interval), 15000);
+        }
+        
+        // draw the cake + optionally candle on top
+        let showCandleOnCanvas = false;
+        function drawCanvasWithCandle(hasCandle) {
+            showCandleOnCanvas = hasCandle;
+            drawCake();
+        }
+        
+        function drawCake() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // draw plate
+            ctx.fillStyle = "#f4e3c6";
+            ctx.shadowBlur = 0;
+            ctx.beginPath();
+            ctx.ellipse(250, 340, 180, 40, 0, 0, Math.PI * 2);
+            ctx.fillStyle = "#ecd9b4";
+            ctx.fill();
+            ctx.fillStyle = "#e6c8a0";
+            ctx.beginPath();
+            ctx.ellipse(250, 338, 170, 30, 0, 0, Math.PI * 2);
+            ctx.fill();
+            // bottom layer
+            ctx.fillStyle = "#c98a4b";
+            ctx.shadowBlur = 4;
+            ctx.fillRect(130, 260, 240, 70);
+            ctx.fillStyle = "#b46f3a";
+            ctx.fillRect(130, 260, 240, 12);
+            // top layer
+            ctx.fillStyle = "#e3a56d";
+            ctx.fillRect(150, 210, 200, 55);
+            ctx.fillStyle = "#d4904a";
+            ctx.fillRect(150, 210, 200, 10);
+            // frosting
+            ctx.fillStyle = "#fff2df";
+            ctx.beginPath();
+            for(let i=150; i<=350; i+=18){
+                ctx.beginPath();
+                ctx.ellipse(i, 210, 12, 8, 0, 0, Math.PI*2);
+                ctx.fill();
+            }
+            ctx.fillStyle = "#ffd966";
+            ctx.beginPath();
+            ctx.ellipse(250, 205, 35, 12, 0, 0, Math.PI*2);
+            ctx.fill();
+            // sprinkles
+            ctx.fillStyle = "#ff6b82";
+            for(let s=0; s<30; s++) {
+                ctx.fillRect(170 + (s*7)%180, 230 + (s%3)*7, 3, 6);
+            }
+            // Draw candle if placed
+            if (showCandleOnCanvas) {
+                // draw candle stick on cake top center
+                ctx.fillStyle = "#fc4a6c";
+                ctx.shadowBlur = 2;
+                ctx.fillRect(240, 170, 22, 50);
+                ctx.fillStyle = "#f27d5c";
+                ctx.fillRect(242, 168, 18, 8);
+                // flame
+                ctx.beginPath();
+                ctx.moveTo(251, 158);
+                ctx.lineTo(244, 168);
+                ctx.lineTo(258, 168);
+                ctx.fillStyle = "#ffa500";
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(251, 152);
+                ctx.lineTo(246, 162);
+                ctx.lineTo(256, 162);
+                ctx.fillStyle = "#ffdd77";
+                ctx.fill();
+                ctx.fillStyle = "orange";
+                ctx.beginPath();
+                ctx.arc(251, 164, 6, 0, Math.PI*2);
+                ctx.fill();
+                ctx.fillStyle = "gold";
+                ctx.beginPath();
+                ctx.arc(251, 162, 3, 0, Math.PI*2);
+                ctx.fill();
+            }
+        }
+        
+        // button blow logic
+        blowButton.addEventListener('click', () => {
+            if (candlePlaced && musicEnded) {
+                alert("🎈 HAPPY BIRTHDAY! 🎈\n✨ Your wish has been granted! ✨");
+                // optional reset or keep, but do not alter more.
+            } else {
+                // if user clicks before music ends? we still can alert happy birthday.
+                alert("🎂 Happy Birthday! 🎂");
+            }
+        });
+        
+        // Initialize drawing
+        drawCake();
+        
+        // event listeners for drag
+        draggableCandle.addEventListener('mousedown', onDragStart);
+        draggableCandle.addEventListener('touchstart', onDragStart, {passive: false});
+        window.addEventListener('mousemove', onDragMove);
+        window.addEventListener('mouseup', onDragEnd);
+        window.addEventListener('touchmove', onDragMove, {passive: false});
+        window.addEventListener('touchend', onDragEnd);
+        
+        // reset canvas draw if needed
+    })();
+</script>
+</body>
+</html>
