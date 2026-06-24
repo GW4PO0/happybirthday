@@ -15,6 +15,39 @@ let offsetX = 0;
 let offsetY = 0;
 let musicPlayed = false; // Flag to prevent multiple audio triggers
 
+// Improved audio play function
+function playHappyMusic() {
+    const music = document.querySelector('.js-happy-music');
+    
+    // Reset audio
+    music.currentTime = 0;
+    music.src = 'audio/Happy.mp3';
+    music.load();
+    
+    // Create a promise-based play function
+    function attemptPlay() {
+        music.play()
+            .then(() => {
+                console.log('Music playing successfully');
+            })
+            .catch(error => {
+                console.error('Play failed:', error);
+                
+                // Try playing after user interaction
+                document.addEventListener('click', function playOnClick() {
+                    music.play().catch(e => console.log('Still failed:', e));
+                    document.removeEventListener('click', playOnClick);
+                }, { once: true });
+            });
+    }
+    
+    // Wait for audio to be ready
+    music.addEventListener('canplaythrough', attemptPlay, { once: true });
+    
+    // Fallback if canplaythrough doesn't fire
+    setTimeout(attemptPlay, 1000);
+}
+
 // Touch event handlers for candle dragging
 candle.addEventListener('touchstart', function(e) {
     if (candle.parentElement === candleStage) {
@@ -117,22 +150,10 @@ candle.addEventListener('touchend', function(e) {
             fire.style.display = 'block';
             candle.style.height = 'clamp(20px, calc(20px + 5vw), 112px)';
             
+            // Call playHappyMusic here
+            playHappyMusic();
+            
             const music = document.querySelector('.js-happy-music');
-            music.src = 'audio/Happy.mp3';
-            music.load();
-            
-            // Add a loadeddata event to ensure audio is ready
-            music.addEventListener('loadeddata', function() {
-                music.play().catch(function(error) {
-                    console.log('Audio play failed:', error);
-                });
-            });
-            
-            // Also try playing immediately after load
-            music.play().catch(function(error) {
-                console.log('Audio play failed:', error);
-            });
-            
             music.addEventListener('ended', function() {
                 happyBirthday.textContent = 'Make a Wish!';
                 happyBirthday.style.display = 'block';
@@ -187,20 +208,10 @@ candle.addEventListener('dragstart', function(e) {
             fire.style.display = 'block';
             candle.style.height = 'clamp(20px, calc(20px + 5vw), 112px)';
             
+            // Call playHappyMusic here
+            playHappyMusic();
+            
             const music = document.querySelector('.js-happy-music');
-            music.src = 'audio/Happy.mp3';
-            music.load();
-            
-            music.addEventListener('loadeddata', function() {
-                music.play().catch(function(error) {
-                    console.log('Audio play failed:', error);
-                });
-            });
-            
-            music.play().catch(function(error) {
-                console.log('Audio play failed:', error);
-            });
-            
             music.addEventListener('ended', function() {
                 happyBirthday.textContent = 'Make a Wish!';
                 happyBirthday.style.display = 'block';
