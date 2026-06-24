@@ -14,8 +14,27 @@ let isDragging = false;
 let offsetX = 0;
 let offsetY = 0;
 let musicPlayed = false; // Flag to prevent multiple audio triggers
+let userInteracted = false; // Track user interaction for mobile audio
 
-// Improved audio play function
+// Register user interaction on first touch or click
+document.addEventListener('touchstart', function() {
+    userInteracted = true;
+}, { once: true, passive: true });
+
+document.addEventListener('click', function() {
+    userInteracted = true;
+}, { once: true, passive: true });
+
+// Also register interaction on candle touch/click
+candle.addEventListener('touchstart', function() {
+    userInteracted = true;
+}, { once: true, passive: true });
+
+candle.addEventListener('click', function() {
+    userInteracted = true;
+}, { once: true, passive: true });
+
+// Improved audio play function with mobile support
 function playHappyMusic() {
     const music = document.querySelector('.js-happy-music');
     
@@ -26,6 +45,21 @@ function playHappyMusic() {
     
     // Create a promise-based play function
     function attemptPlay() {
+        // Check if user has interacted with the page
+        if (!userInteracted) {
+            console.log('Waiting for user interaction...');
+            // Wait for user interaction then try again
+            document.addEventListener('touchstart', function playOnTouch() {
+                music.play().catch(e => console.log('Play failed:', e));
+                document.removeEventListener('touchstart', playOnTouch);
+            }, { once: true });
+            document.addEventListener('click', function playOnClick() {
+                music.play().catch(e => console.log('Play failed:', e));
+                document.removeEventListener('click', playOnClick);
+            }, { once: true });
+            return;
+        }
+        
         music.play()
             .then(() => {
                 console.log('Music playing successfully');
@@ -34,6 +68,10 @@ function playHappyMusic() {
                 console.error('Play failed:', error);
                 
                 // Try playing after user interaction
+                document.addEventListener('touchstart', function playOnTouch() {
+                    music.play().catch(e => console.log('Still failed:', e));
+                    document.removeEventListener('touchstart', playOnTouch);
+                }, { once: true });
                 document.addEventListener('click', function playOnClick() {
                     music.play().catch(e => console.log('Still failed:', e));
                     document.removeEventListener('click', playOnClick);
