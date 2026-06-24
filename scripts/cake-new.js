@@ -50,11 +50,8 @@ function playHappyMusic() {
 
 // Touch event handlers for candle dragging
 candle.addEventListener('touchstart', function(e) {
-    // Remove the check that prevents dragging if candle is already on stage
-    // Allow dragging from anywhere
     if (candle.parentElement === candleStage) {
-        // If candle is already on stage, allow it to be dragged again
-        // We'll handle this case
+        return;
     }
     
     const touch = e.touches[0];
@@ -71,14 +68,10 @@ candle.addEventListener('touchstart', function(e) {
     candle.style.pointerEvents = 'none';
     candle.style.width = rect.width + 'px';
     candle.style.height = rect.height + 'px';
-    candle.style.transition = 'none';
     
     // Prevent page scroll
     document.body.style.overflow = 'hidden';
     document.body.style.touchAction = 'none';
-    
-    // Add dragging class to body for CSS
-    document.body.classList.add('dragging');
     
     e.preventDefault();
     e.stopPropagation();
@@ -120,7 +113,12 @@ candle.addEventListener('touchend', function(e) {
     
     candle.style.opacity = '1';
     candle.style.pointerEvents = 'auto';
-    candle.style.transition = '';
+    candle.style.position = '';
+    candle.style.zIndex = '';
+    candle.style.left = '';
+    candle.style.top = '';
+    candle.style.width = '';
+    candle.style.height = '';
     
     // Reset stage styles
     candleStage.style.border = '2px solid #ccc';
@@ -129,7 +127,6 @@ candle.addEventListener('touchend', function(e) {
     // Reset body scroll
     document.body.style.overflow = '';
     document.body.style.touchAction = '';
-    document.body.classList.remove('dragging');
     
     // Check if dropped on candleStage
     const touch = e.changedTouches[0];
@@ -140,61 +137,32 @@ candle.addEventListener('touchend', function(e) {
         touch.clientY >= stageRect.top && touch.clientY <= stageRect.bottom) {
         
         // Drop the candle into candleStage
-        if (!musicPlayed) {
-            // If candle is in candleHolder or already on stage, move it
-            if (candle.parentElement === candleHolder || candle.parentElement === candleStage) {
-                // If already on stage, just reposition it
-                if (candle.parentElement !== candleStage) {
-                    candleStage.appendChild(candle);
-                }
-                candle.draggable = false;
-                candle.style.position = 'relative';
-                candle.style.left = '0';
-                candle.style.top = '0';
-                candle.style.width = '';
-                candle.style.height = '';
-                candle.style.transition = '';
-                
-                happyBirthday.textContent = 'Happy Birthday To You';
-                fire.style.display = 'block';
-                candle.style.height = 'clamp(20px, calc(20px + 5vw), 112px)';
-                
-                // Call playHappyMusic
-                playHappyMusic();
-                
-                const music = document.querySelector('.js-happy-music');
-                music.addEventListener('ended', function() {
-                    happyBirthday.textContent = 'Make a Wish!';
-                    happyBirthday.style.display = 'block';
-                    blowBtn.style.display = 'block';
-                });
-                
-                musicPlayed = true; // Prevent multiple triggers
-            }
-        }
-    } else {
-        // If not dropped on stage, reset position
-        if (candle.parentElement !== candleHolder && candle.parentElement !== candleStage) {
-            // Return to holder if not on stage
-            candleHolder.appendChild(candle);
+        if (candle.parentElement === candleHolder && !musicPlayed) {
+            candleStage.appendChild(candle);
+            candle.draggable = false;
             candle.style.position = 'relative';
             candle.style.left = '0';
             candle.style.top = '0';
             candle.style.width = '';
             candle.style.height = '';
-            candle.style.transition = '';
+            
+            happyBirthday.textContent = 'Happy Birthday To You';
+            fire.style.display = 'block';
+            candle.style.height = 'clamp(20px, calc(20px + 5vw), 112px)';
+            
+            // Call playHappyMusic here
+            playHappyMusic();
+            
+            const music = document.querySelector('.js-happy-music');
+            music.addEventListener('ended', function() {
+                happyBirthday.textContent = 'Make a Wish!';
+                happyBirthday.style.display = 'block';
+                blowBtn.style.display = 'block';
+            });
+            
+            musicPlayed = true; // Prevent multiple triggers
         }
     }
-    
-    // Reset candle styles
-    candle.style.position = '';
-    candle.style.zIndex = '';
-    candle.style.left = '';
-    candle.style.top = '';
-    candle.style.width = '';
-    candle.style.height = '';
-    candle.style.pointerEvents = 'auto';
-    candle.style.opacity = '1';
     
     e.preventDefault();
 }, { passive: false });
@@ -218,7 +186,11 @@ document.addEventListener('touchmove', function(e) {
 
 // Drag events (keep original for desktop)
 candle.addEventListener('dragstart', function(e) {
-    // Allow drag even if candle is on stage
+    if (candle.parentElement === candleStage) {
+        e.preventDefault();
+        return false;
+    }
+    
     let selected = e.target;
     
     candleStage.addEventListener('dragover', function(e) {
@@ -228,17 +200,15 @@ candle.addEventListener('dragstart', function(e) {
     candleStage.addEventListener('drop', function(e) {
         e.preventDefault();
         
-        if (!musicPlayed) {
-            if (candle.parentElement !== candleStage) {
-                candleStage.appendChild(selected);
-            }
+        if (candle.parentElement === candleHolder && !musicPlayed) {
+            candleStage.appendChild(selected);
             candle.draggable = false;
             
             happyBirthday.textContent = 'Happy Birthday To You';
             fire.style.display = 'block';
             candle.style.height = 'clamp(20px, calc(20px + 5vw), 112px)';
             
-            // Call playHappyMusic
+            // Call playHappyMusic here
             playHappyMusic();
             
             const music = document.querySelector('.js-happy-music');
