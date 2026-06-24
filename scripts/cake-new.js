@@ -13,6 +13,7 @@ let isShow = true;
 let isDragging = false;
 let offsetX = 0;
 let offsetY = 0;
+let musicPlayed = false; // Flag to prevent multiple audio triggers
 
 // Touch event handlers for candle dragging
 candle.addEventListener('touchstart', function(e) {
@@ -73,7 +74,6 @@ candle.addEventListener('touchmove', function(e) {
 
 candle.addEventListener('touchend', function(e) {
     if (!isDragging) {
-        // If not dragging, check if it's a tap on the candle (optional)
         return;
     }
     isDragging = false;
@@ -104,7 +104,7 @@ candle.addEventListener('touchend', function(e) {
         touch.clientY >= stageRect.top && touch.clientY <= stageRect.bottom) {
         
         // Drop the candle into candleStage
-        if (candle.parentElement === candleHolder) {
+        if (candle.parentElement === candleHolder && !musicPlayed) {
             candleStage.appendChild(candle);
             candle.draggable = false;
             candle.style.position = 'relative';
@@ -121,13 +121,25 @@ candle.addEventListener('touchend', function(e) {
             music.src = 'audio/Happy.mp3';
             music.load();
             
+            // Add a loadeddata event to ensure audio is ready
+            music.addEventListener('loadeddata', function() {
+                music.play().catch(function(error) {
+                    console.log('Audio play failed:', error);
+                });
+            });
+            
+            // Also try playing immediately after load
+            music.play().catch(function(error) {
+                console.log('Audio play failed:', error);
+            });
+            
             music.addEventListener('ended', function() {
                 happyBirthday.textContent = 'Make a Wish!';
                 happyBirthday.style.display = 'block';
                 blowBtn.style.display = 'block';
             });
             
-            music.play();
+            musicPlayed = true; // Prevent multiple triggers
         }
     }
     
@@ -167,7 +179,7 @@ candle.addEventListener('dragstart', function(e) {
     candleStage.addEventListener('drop', function(e) {
         e.preventDefault();
         
-        if (candle.parentElement === candleHolder) {
+        if (candle.parentElement === candleHolder && !musicPlayed) {
             candleStage.appendChild(selected);
             candle.draggable = false;
             
@@ -179,13 +191,23 @@ candle.addEventListener('dragstart', function(e) {
             music.src = 'audio/Happy.mp3';
             music.load();
             
+            music.addEventListener('loadeddata', function() {
+                music.play().catch(function(error) {
+                    console.log('Audio play failed:', error);
+                });
+            });
+            
+            music.play().catch(function(error) {
+                console.log('Audio play failed:', error);
+            });
+            
             music.addEventListener('ended', function() {
                 happyBirthday.textContent = 'Make a Wish!';
                 happyBirthday.style.display = 'block';
                 blowBtn.style.display = 'block';
             });
             
-            music.play();
+            musicPlayed = true;
         }
     });
 });
@@ -202,13 +224,10 @@ yesBtn.addEventListener('touchstart', function(e) {
     window.location.href = 'gift.html';
 }, { passive: false });
 
+// Remove No button functionality - just show alert
 noBtn.addEventListener('touchstart', function(e) {
     e.preventDefault();
-    giftInvitation.style.display = 'none';
-    cake.style.display = 'block';
-    candle.style.display = 'block';
-    happyBirthday.style.display = 'block';
-    happyBirthday.textContent = 'Make a Wish!';
+    alert('Maybe next time!');
 }, { passive: false });
 
 // Click events for desktop support
@@ -219,12 +238,9 @@ yesBtn.addEventListener('click', function(e) {
 
 noBtn.addEventListener('click', function(e) {
     e.preventDefault();
-    giftInvitation.style.display = 'none';
-    cake.style.display = 'block';
-    candle.style.display = 'block';
-    happyBirthday.style.display = 'block';
-    happyBirthday.textContent = 'Make a Wish!';
+    alert('Maybe next time!');
 });
+
 // Original click events (keep for desktop)
 function blowCandle() {
     alert('HAPPY BIRTHDAY JOLY');
@@ -239,7 +255,6 @@ function showInvitation() {
     candle.style.display = 'none';
     happyBirthday.style.display = 'none';
     blowBtn.style.display = 'none';
-    giftInvitation.style.display = 'flex';
     proceedToGift.style.textDecoration = 'none';
     proceedToGift.style.color = 'inherit';
 }
@@ -248,14 +263,10 @@ function showInvitation() {
 blowBtn.addEventListener('click', blowCandle);
 
 yesBtn.addEventListener('click', function() {
-    proceedToGift.href = 'photos.html';
-    giftInvitation.style.display = 'none';
+    window.location.href = 'gift.html';
 });
 
-noBtn.addEventListener('click', function() {
-    giftInvitation.style.display = 'none';
-    cake.style.display = 'block';
-    candle.style.display = 'block';
-    happyBirthday.style.display = 'block';
-    happyBirthday.textContent = 'Make a Wish!';
+noBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    alert('Maybe next time!');
 });
