@@ -199,8 +199,7 @@ blowBtn.addEventListener('touchstart', function(e) {
 // Touch events for invitation buttons
 yesBtn.addEventListener('touchstart', function(e) {
     e.preventDefault();
-    proceedToGift.href = 'photos.html';
-    giftInvitation.style.display = 'none';
+    window.location.href = 'gift.html';
 }, { passive: false });
 
 noBtn.addEventListener('touchstart', function(e) {
@@ -212,6 +211,20 @@ noBtn.addEventListener('touchstart', function(e) {
     happyBirthday.textContent = 'Make a Wish!';
 }, { passive: false });
 
+// Click events for desktop support
+yesBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    window.location.href = 'gift.html';
+});
+
+noBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    giftInvitation.style.display = 'none';
+    cake.style.display = 'block';
+    candle.style.display = 'block';
+    happyBirthday.style.display = 'block';
+    happyBirthday.textContent = 'Make a Wish!';
+});
 // Original click events (keep for desktop)
 function blowCandle() {
     alert('HAPPY BIRTHDAY JOLY');
