@@ -1,233 +1,361 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-html, body {
-  background-color: lightgray;
-  margin: 0;
-  min-width: var(--min-screen-width);
-  max-width: var(--max-screen-width);
-  margin: 0 auto;
-  font-size: clamp(0.8rem, 1.2rem, 1.5rem);
-}
-.main-container{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-    row-gap: clamp(20px, 50px, 80px);
-    padding: clamp(20px, 40px, 60px);
-    min-height: 100vh;
-}
+       /* ----- reset & base (your code, only colors & animations added) ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.about-section-container{
-    display: flex;
-    justify-content: center;
-    height: auto;
-    min-height: 50vh;
-    width: 100%;
-    padding: clamp(10px, 20px, 30px);
-}
-.about-section{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    column-gap: clamp(15px, 30px, 50px);
-    flex-wrap: wrap;
-    row-gap: clamp(30px, 40px, 60px);
-}
-.instruction{
-    position: relative;
-    top: clamp(20px, 40px, 60px);
-    margin-top: clamp(60px, 100px, 150px);
-    margin-bottom: clamp(30px, 40px, 60px);
-    font-size: clamp(0.8rem, 1.2rem, 1.6rem);
-    text-align: center;
-    padding: 0 clamp(10px, 20px, 40px);
-}
-.photo-section{
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(clamp(200px, 300px, 350px), 1fr));
-    gap: clamp(25px, 35px, 50px);
-    width: 100%;
-    max-width: clamp(500px, 80vw, 1200px);
-    padding: clamp(10px, 20px, 30px);
-    justify-items: center;
-    grid-auto-rows: auto;
-}
-.photo-card-container, .about-img-container{
-    background-color: white;
-    padding: clamp(15px, 20px, 30px) clamp(15px, 20px, 30px) clamp(30px, 50px, 70px) clamp(15px, 20px, 30px);
-    width: clamp(160px, 250px, 300px);
-}
-.about-contents{
-    width: clamp(280px, 45%, 60%);
-    flex: 1 1 clamp(280px, 45%, 60%);
-    min-width: 280px;
-    max-width: 600px;
-}
-.photo-card-container{
-    background-color: white;
-    padding: clamp(20px, 25px, 35px) clamp(20px, 25px, 35px) clamp(40px, 60px, 80px) clamp(20px, 25px, 35px);
-    width: clamp(200px, 300px, 350px);
-    max-height: 500px;
-}
+        html,
+        body {
+            background-color: rgb(28, 28, 28);
+            margin: 0;
+            min-width: 320px;
+            max-width: 1400px;
+            margin: 0 auto;
+            font-size: clamp(0.8rem, 1.2rem, 1.5rem);
+            color: #f0f0f0;
+            transition: background-color 0.2s;
+        }
 
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            row-gap: clamp(20px, 50px, 80px);
+            padding: clamp(20px, 40px, 60px);
+            min-height: 100vh;
+            background: rgb(28, 28, 28);
+        }
 
+        /* ----- about section ----- */
+        .about-section-container {
+            display: flex;
+            justify-content: center;
+            height: auto;
+            min-height: 50vh;
+            width: 100%;
+            padding: clamp(10px, 20px, 30px);
+        }
 
-.photo-card-container:hover{
-    cursor: pointer;
-}
+        .about-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            column-gap: clamp(15px, 30px, 50px);
+            flex-wrap: wrap;
+            row-gap: clamp(30px, 40px, 60px);
+        }
 
-.about-img-container{
-    width: clamp(300px, 35vw, 350px);
-    padding: clamp(15px, 20px, 30px);
-    flex-shrink: 0;
-}
-.about-img{
-    width: 100%;
-    aspect-ratio: 2/3;
-    object-fit: cover;
-}
-.photo, .about-img{
-    width: 100%;
-    aspect-ratio: 3/4;
-    object-fit: cover;
-}
-.photo-card-container h3 {
-    font-size: clamp(0.8rem, 1.1rem, 1.3rem);
-    margin-top: 10px;
-    text-align: center;
-}
+        .about-img-container {
+            background-color: #3a3a3a;
+            padding: clamp(15px, 20px, 30px);
+            width: clamp(300px, 35vw, 350px);
+            flex-shrink: 0;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            transition: transform 0.25s ease, box-shadow 0.3s ease;
+        }
 
-.photo-card-container p {
-    font-size: clamp(0.6rem, 0.9rem, 1.1rem);
-    color: #666;
-    text-align: center;
-}
+        .about-img-container:hover {
+            transform: scale(1.01);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8);
+        }
 
+        .about-contents {
+            width: clamp(280px, 45%, 60%);
+            flex: 1 1 clamp(280px, 45%, 60%);
+            min-width: 280px;
+            max-width: 600px;
+            background: #3a3a3a;
+            padding: clamp(20px, 30px, 40px);
+            border-radius: 16px;
+            line-height: 1.7;
+            color: #e8e8e8;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s ease, box-shadow 0.2s;
+        }
 
-.photo{
-    width: 100%;
-    aspect-ratio: 3/4;
-    object-fit: cover;
-}
+        .about-contents:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.7);
+        }
 
-.modal-section-container{
-    background-color: rgba(0, 0, 0, 0.3);
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 1000;
-}
+        .about-img {
+            width: 100%;
+            aspect-ratio: 2/3;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+        }
 
-.modal-section-container.show{
-    opacity: 1;
-    pointer-events: auto;
-}
+        /* ----- instruction text ----- */
+        .instruction {
+            position: relative;
+            top: clamp(20px, 40px, 60px);
+            margin-top: clamp(60px, 100px, 150px);
+            margin-bottom: clamp(30px, 40px, 60px);
+            font-size: clamp(0.9rem, 1.3rem, 1.7rem);
+            text-align: center;
+            padding: 0 clamp(10px, 20px, 40px);
+            color: #dddddd;
+            letter-spacing: 0.3px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 24px;
+            border-radius: 60px;
+            backdrop-filter: blur(2px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: background 0.2s;
+        }
 
-.no-scroll {
-    position: fixed;
-    width: 100%;
-    top: 0;
-    left: 0;
-    padding-right: var(--scrollbar-width, 0px);
-}
-.modal-container{
-    width: clamp(280px, 85vw, 440px);
-    height: clamp(350px, 75vh, 540px);
-    background-color: white;
-    text-align: start;
-    padding: clamp(15px, 25px, 40px);
-    border-radius: 4px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
+        /* ----- photo grid (your structure) ----- */
+        .photo-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(clamp(200px, 300px, 350px), 1fr));
+            gap: clamp(25px, 35px, 50px);
+            width: 100%;
+            max-width: clamp(500px, 80vw, 1200px);
+            padding: clamp(10px, 20px, 30px);
+            justify-items: center;
+            grid-auto-rows: auto;
+        }
 
-.content{
-    padding-top: clamp(10px, 20px, 40px);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    row-gap: clamp(20px, 50px, 80px);
-    flex: 1;
-    overflow: hidden;
-}
+        /* --- each card starts hidden and floats up --- */
+        .photo-card-container {
+            background-color: #3a3a3a;
+            padding: clamp(20px, 25px, 35px) clamp(20px, 25px, 35px) clamp(40px, 60px, 80px) clamp(20px, 25px, 35px);
+            width: clamp(200px, 300px, 350px);
+            max-height: 500px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.1),
+                box-shadow 0.3s ease,
+                background-color 0.2s,
+                opacity 0.8s ease,
+                transform 1.2s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            /* initial hidden state - floated down */
+            opacity: 0;
+            transform: translateY(60px) scale(0.95);
+        }
 
-.content-text {
-    overflow-y: auto;
-    padding: 0 clamp(5px, 10px, 20px);
-    max-height: 100%;
-    width: 100%;
-    flex: 1;
-}
+        /* visible class - floats up to original position */
+        .photo-card-container.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
 
-.content-text p {
-    font-size: clamp(0.85rem, 1.1rem, 1.3rem);
-    line-height: 1.6;
-    text-align: center;
-    word-wrap: break-word;
-}
+        /* hidden state when not visible - resets to floated down */
+        .photo-card-container.hidden {
+            opacity: 0;
+            transform: translateY(60px) scale(0.95);
+        }
 
-.modal-container h2 {
-    font-size: clamp(1rem, 1.5rem, 2rem);
-    margin-bottom: clamp(5px, 10px, 15px);
-    text-align: center;
-    word-wrap: break-word;
-    flex-shrink: 0;
-}
+        .photo-card-container:hover {
+            transform: scale(1.02) translateY(-6px) !important;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
+            background-color: #444444;
+            border-color: rgba(255, 255, 255, 0.08);
+        }
 
-.close{
-    padding: clamp(10px, 14px, 18px) clamp(20px, 30px, 40px);
-    font-size: clamp(0.9rem, 1.1rem, 1.3rem);
-    background-color: #4a90d9;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    width: clamp(120px, 60%, 200px);
-    min-width: 100px;
-    flex-shrink: 0;
-    margin-top: clamp(10px, 15px, 20px);
-}
+        .photo-card-container:active {
+            transform: scale(0.97) !important;
+            transition-duration: 0.08s;
+        }
 
-.close:hover {
-    background-color: #357abd;
-}
+        .photo-card-container .photo {
+            width: 100%;
+            aspect-ratio: 3/4;
+            object-fit: cover;
+            border-radius: 12px;
+            display: block;
+            background: #1f1f1f;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            transition: filter 0.2s;
+        }
 
-.back-btn{
-    font-size: clamp(0.5rem, 0.8rem, 1rem);
-    padding: clamp(4px, 6px, 10px) clamp(8px, 12px, 18px);
-    position: fixed;
-    top: clamp(8px, 2%, 20px);
-    left: clamp(8px, 2%, 20px);
-    background-color: rgba(255, 255, 255, 0.9);
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    z-index: 999;
-}
+        .photo-card-container:hover .photo {
+            filter: brightness(1.05);
+        }
 
-.back-btn:hover {
-    background-color: #f0f0f0;
-}
+        /* ----- modal (your logic, only colors & animation) ----- */
+        .modal-section-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1000;
+            transition: opacity 0.35s ease, backdrop-filter 0.3s;
+        }
 
-.back-btn a{
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    white-space: nowrap;
-}
+        .modal-section-container.show {
+            opacity: 1;
+            pointer-events: auto;
+            backdrop-filter: blur(6px);
+        }
+
+        .modal-container {
+            width: clamp(280px, 85vw, 440px);
+            height: clamp(350px, 75vh, 540px);
+            background: #2a2a2a;
+            text-align: start;
+            padding: clamp(15px, 25px, 40px);
+            border-radius: 28px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transform: scale(0.92) translateY(12px);
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2),
+                opacity 0.25s ease;
+            opacity: 0;
+        }
+
+        .modal-section-container.show .modal-container {
+            transform: scale(1) translateY(0px);
+            opacity: 1;
+        }
+
+        .content {
+            padding-top: clamp(10px, 20px, 40px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            row-gap: clamp(20px, 50px, 80px);
+            flex: 1;
+            overflow: hidden;
+            color: #ececec;
+        }
+
+        .content-text {
+            overflow-y: auto;
+            padding: 0 clamp(5px, 10px, 20px);
+            max-height: 100%;
+            width: 100%;
+            flex: 1;
+            scrollbar-width: thin;
+            scrollbar-color: #555 #2a2a2a;
+        }
+
+        .content-text::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .content-text::-webkit-scrollbar-track {
+            background: #2a2a2a;
+        }
+
+        .content-text::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 12px;
+        }
+
+        .content-text p {
+            font-size: clamp(0.9rem, 1.1rem, 1.3rem);
+            line-height: 1.7;
+            text-align: center;
+            word-wrap: break-word;
+            color: #f0f0f0;
+        }
+
+        .modal-container h2 {
+            font-size: clamp(1rem, 1.5rem, 2rem);
+            margin-bottom: clamp(5px, 10px, 15px);
+            text-align: center;
+            word-wrap: break-word;
+            flex-shrink: 0;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .close {
+            padding: clamp(10px, 14px, 18px) clamp(20px, 30px, 40px);
+            font-size: clamp(0.9rem, 1.1rem, 1.3rem);
+            background: #4a6a8f;
+            color: white;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            width: clamp(120px, 60%, 200px);
+            min-width: 100px;
+            flex-shrink: 0;
+            margin-top: clamp(10px, 15px, 20px);
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .close:hover {
+            background: #5f7fa3;
+            transform: scale(1.02);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+        }
+
+        .close:active {
+            transform: scale(0.94);
+        }
+
+        /* ----- back button (your structure) ----- */
+        .back-btn {
+            font-size: clamp(0.5rem, 0.8rem, 1rem);
+            padding: clamp(4px, 6px, 10px) clamp(8px, 12px, 18px);
+            position: fixed;
+            top: clamp(8px, 2%, 20px);
+            left: clamp(8px, 2%, 20px);
+            background: rgba(50, 50, 50, 0.85);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 40px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            z-index: 999;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .back-btn:hover {
+            background: rgba(80, 80, 80, 0.9);
+            transform: scale(1.04);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        .back-btn a {
+            text-decoration: none;
+            color: #f0f0f0;
+            display: block;
+            white-space: nowrap;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+
+        /* scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgb(28, 28, 28);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4a4a4a;
+            border-radius: 12px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #5f5f5f;
+        }
