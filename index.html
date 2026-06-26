@@ -6,10 +6,19 @@
     <link rel="stylesheet" href="styles/cake-new.css">
     <link rel="icon" href="data:,">
     <title>New cake</title>
-
 </head>
 <body>
-    <div class="main-container">
+    <canvas id="fireworks-canvas"></canvas>
+    
+    <!-- Intro Section -->
+    <div class="intro-section" id="introSection">
+        <div class="intro-content">
+            <div class="intro-label" id="introLabel">🔊 Turn up the volume of your phone and allow the microphone before continuing</div>
+            <button class="microphone-permission" id="micPermissionBtn">🎤 Allow Microphone</button>
+        </div>
+    </div>
+    
+    <div class="main-container" id="mainContainer" style="display: none;">
         <div class="label-container">
             <div class="happy-birthday">Drag the Candle on Top of the Cake</div>
         </div>
@@ -17,13 +26,14 @@
         <div class="cake-container">
             <div class="candle-and-cake-container">
                 <div class="candle-stage"></div>
-                 <img class="cake"></img>
+                <img class="cake" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100' height='100' fill='%23f0a0a0'/%3E%3C/svg%3E" alt="cake">
+                <div class="instruction-message" id="instructionMessage">Wait for the music to finish</div>
             </div>
                 
             <div class="candle-holder">
                 <div class="candle" draggable="true">
                     <div class="candle-stick">
-                         <div class="fire">
+                        <div class="fire">
                             <div class="fire1">
                                 <div class="fire2">
                                     <div class="fire3"></div>
@@ -31,27 +41,19 @@
                             </div>
                         </div>
                     </div>
-                   
                 </div>
             </div>
         </div>
-       
         
-        
-        <button class="blow-btn" onclick="blowCandle()">Blow the Candle</button>
-        <audio src="" class="js-happy-music"></audio>
+        <audio class="js-happy-music"></audio>
         <div class="gift-invitation-container">
-             <div class="gift-invitation">Naa ko gift. do you wanna see?</div>
+            <div class="gift-invitation">Naa ko gift. do you wanna see?</div>
             <div class="button-container">
-                <button class="yes" >Yes</button>
+                <button class="yes">Yes</button>
                 <button class="no">No</button>
             </div>
         </div>
-       
-        
     </div>
-    <script src="scripts/cake-new.js">
-       
-    </script>
+    <script src="scripts/cake-new.js"></script>
 </body>
 </html>
