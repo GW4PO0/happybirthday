@@ -1,0 +1,239 @@
+/* ----- reset & base ----- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html,
+body {
+    background: linear-gradient(
+        135deg,
+        #120000 0%,
+        #2b0000 25%,
+        #4d0000 55%,
+        #700000 80%,
+        #2a0000 100%
+    );
+    height: 100%;
+    margin: 0;
+    margin: 0 auto;
+    font-size: 1.2rem;
+    overflow: hidden;
+    color: #f5eaea;
+}
+.main-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    z-index: 100;
+    position: relative;
+    overflow: hidden;
+
+    background: linear-gradient(
+        135deg,
+        #120000,
+        #2b0000,
+        #4d0000,
+        #700000,
+        #2a0000
+    );
+}
+
+/* ----- back button ----- */
+/* ----- back button (your structure) ----- */
+.back-btn {
+    font-size: clamp(0.5rem, 0.8rem, 1rem);
+    padding: clamp(4px, 6px, 10px) clamp(8px, 12px, 18px);
+    position: fixed;
+    top: clamp(8px, 2%, 20px);
+    left: clamp(8px, 2%, 20px);
+
+    background: rgba(90, 0, 0, .75);
+    border: 1px solid rgba(255,120,120,.2);
+    backdrop-filter: blur(4px);
+
+    border-radius: 40px;
+    cursor: pointer;
+    transition: background .2s, transform .15s, box-shadow .2s;
+    z-index: 999;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,.5);
+
+    text-decoration: none;
+    color: #f5eaea;
+    display: block;
+    white-space: nowrap;
+    font-weight: 400;
+    letter-spacing: .3px;
+}
+
+.back-btn:hover {
+    background: rgba(130,0,0,.9);
+    transform: scale(1.04);
+    box-shadow: 0 8px 20px rgba(120,0,0,.35);
+}
+
+.back-btn:active {
+    transform: scale(.95);
+}
+
+/* ----- bouquet (center) - appears after 4 seconds ----- */
+.bouquet {
+    width: 50rem;
+    max-width: 85vw;
+    height: 38rem;
+    max-height: 70vh;
+
+    background: rgba(35, 0, 0, 0.55);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,110,110,.12);
+
+    border-radius: 60px 60px 30px 30px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 1.8rem;
+    color: #f5eaea;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.45),
+        0 0 30px rgba(120,0,0,.18);
+
+    position: relative;
+    z-index: 10;
+
+    opacity: 0;
+    transform: scale(.7) translateY(50px);
+    transition:
+        opacity .8s ease,
+        transform .8s cubic-bezier(.2,.9,.3,1.1);
+}
+
+.bouquet.show {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}
+
+.bouquet-text {
+    text-align: center;
+    padding: 20px;
+    position: relative;
+    z-index: 11;
+}
+
+.bouquet-text .big {
+    font-size: 5rem;
+    display: block;
+    margin-bottom: 10px;
+    color: #ffffff;
+    text-shadow: 0 4px 18px rgba(255,80,80,.2);
+}
+
+.bouquet-text .label {
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    color: rgba(255,220,220,.75);
+}
+/* ----- flower shower container ----- */
+#flowerShower {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 50;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* ----- BIG FLOWERS WITH OVERLAP - NO GAPS ----- */
+.flower-particle {
+    position: absolute;
+    pointer-events: none;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    transform: translate3d(0, 0, 0);
+    transition: none;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 0;
+}
+
+/* BIGGER flower sizes with overlap */
+.flower-particle {
+    width: clamp(100px, 20vw, 200px);
+    height: clamp(100px, 20vw, 200px);
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+    .flower-particle {
+        width: clamp(80px, 25vw, 120px);
+        height: clamp(80px, 25vw, 120px);
+    }
+}
+
+/* For tablets */
+@media (min-width: 481px) and (max-width: 768px) {
+    .flower-particle {
+        width: clamp(120px, 22vw, 180px);
+        height: clamp(120px, 22vw, 180px);
+    }
+}
+
+/* For larger screens */
+@media (min-width: 769px) and (max-width: 1200px) {
+    .flower-particle {
+        width: clamp(150px, 18vw, 220px);
+        height: clamp(150px, 18vw, 220px);
+    }
+}
+
+.flower-particle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Fallback colored boxes - no gaps */
+.flower-particle.color-box {
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+/* Fall animation class */
+.flower-particle.falling {
+    transition: all 3.5s cubic-bezier(0.4, 0.1, 0.2, 0.9);
+}
+
+.instruction-note {
+    position: absolute;
+    bottom: 8%;
+    color: rgba(255,220,220,.28);
+    font-size: .8rem;
+    letter-spacing: 1px;
+    z-index: 5;
+}
+
+/* responsive - smaller on mobile but still no gaps */
+@media (max-width: 600px) {
+    .bouquet {
+        width: 90vw;
+        height: 50vh;
+        border-radius: 40px;
+    }
+    .bouquet-text .big {
+        font-size: 3.5rem;
+    }
+
+}
