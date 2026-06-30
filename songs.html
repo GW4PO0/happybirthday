@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/songs.css">
+    <title>Songs For You</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="main-container">
+<button class="back-btn" onclick="window.history.back()">Back to Gifts</button>
+        
+        <div class="label-section">
+            <div class="label">
+               
+                Songs Ni Siya
+                <span class="label-underline"></span>
+            </div>
+        </div>
+        
+        <div class="musicplayer-library-container">
+            <div class="music-player-container">
+                <div class="music-img-wrapper">
+                    <img src="images/music-placeholder.jpg" alt="Album Art" class="music-img" id="albumArt">
+                    <div class="music-img-overlay">
+                        <div class="pulse-ring"></div>
+                    </div>
+                </div>
+                <div class="music-content">
+                    <div class="music-title" id="musicTitle">Choose a song</div>
+                    <div class="music-artist" id="musicArtist">Select from the library below</div>
+                </div>
+                <audio class="js-music" id="musicAudio" controls></audio>
+            </div>
+            
+            <div class="all-songs-library-container">
+                <div class="songs-description-container">
+                    <div class="all-song-description-container">
+                        <div class="song-number-description">#</div>
+                        <div class="song-title-description">Title</div>
+                        <div class="song-duration-description">Duration</div>
+                    </div>
+                    <div class="song-library-line"></div>
+                </div>
+                
+                <div class="songs-library-container" id="songsLibrary">
+                    <div class="song-container" data-song="214" data-artist="Rivermaya" data-src="audio/Rivermaya - 214 [Lyric Video].mp3">
+                        <div class="song-number">1</div>
+                        <div class="song-img-content-container">
+                            <img class="song-img" src="images/default-album.jpg" alt="">
+                            <div class="song-content-container">
+                                <div class="song-title">214</div>
+                                <div class="song-artist">Rivermaya</div>
+                            </div>  
+                        </div>
+                        <div class="song-duration">Loading...</div>
+                    </div>
+
+                    <div class="song-container" data-song="Soft Spot" data-artist="Keshi" data-src="audio/Keshi - Soft Spot.mp3">
+                        <div class="song-number">2</div>
+                        <div class="song-img-content-container">
+                            <img class="song-img" src="images/default-album.jpg" alt="">
+                            <div class="song-content-container">
+                                <div class="song-title">Soft Spot</div>
+                                <div class="song-artist">Keshi</div>
+                            </div>  
+                        </div>
+                        <div class="song-duration">Loading...</div>
+                    </div>
+
+                    <div class="song-container" data-song="Ang Huling El Bimbo" data-artist="Eraserheads" data-src="audio/Eraserheads - Ang Huling El Bimbo.mp3">
+                        <div class="song-number">3</div>
+                        <div class="song-img-content-container">
+                            <img class="song-img" src="images/default-album.jpg" alt="">
+                            <div class="song-content-container">
+                                <div class="song-title">Ang Huling El Bimbo</div>
+                                <div class="song-artist">Eraserheads</div>
+                            </div>  
+                        </div>
+                        <div class="song-duration">Loading...</div>
+                    </div>
+
+                    <div class="song-container" data-song="Tadhana" data-artist="Up Dharma Down" data-src="audio/Up Dharma Down - Tadhana.mp3">
+                        <div class="song-number">4</div>
+                        <div class="song-img-content-container">
+                            <img class="song-img" src="images/default-album.jpg" alt="">
+                            <div class="song-content-container">
+                                <div class="song-title">Tadhana</div>
+                                <div class="song-artist">Up Dharma Down</div>
+                            </div>  
+                        </div>
+                        <div class="song-duration">Loading...</div>
+                    </div>
+
+                    <div class="song-container" data-song="Lean On" data-artist="Major Lazer" data-src="audio/Major Lazer - Lean On.mp3">
+                        <div class="song-number">5</div>
+                        <div class="song-img-content-container">
+                            <img class="song-img" src="images/default-album.jpg" alt="">
+                            <div class="song-content-container">
+                                <div class="song-title">Lean On</div>
+                                <div class="song-artist">Major Lazer</div>
+                            </div>  
+                        </div>
+                        <div class="song-duration">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/songs.js"></script>
+</body>
+</html>
